@@ -1,0 +1,16 @@
+# Raw evidence stays local: pcaps, disk/memory images, full logs
+**/evidence/raw/
+*.pcap
+*.pcapng
+*.E01
+*.dd
+*.raw
+*.vmem
+*.evtx
+
+# Secrets and local junk
+*.key
+*.pem
+.env
+.DS_Store
+Thumbs.db
