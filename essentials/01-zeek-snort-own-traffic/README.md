@@ -39,7 +39,7 @@ docker run --rm --user "$(id -u):$(id -g)" \
   zeek/zeek zeek -C -r /pcap/capture.pcap
 ```
 
-`-C` tells Zeek to ignore bad checksums. The capture host offloads checksums to its network card, so its outbound packets look corrupt in the capture. Without `-C`, Zeek skips them.
+`-C` tells Zeek to ignore bad checksums. The capture host offloads checksums to its network card: the driver writes only a partial checksum and the card finishes it after the capture copies the packet, so the host's own outbound packets show the wrong checksum. Without `-C`, Zeek warned about offloading, dropped some DNS, NTP and TLS records, and mis-tracked a few connections. It still logged the four HTTP requests. [Lab 02](../02-tshark-packet-triage/) shows the partial checksum in a single packet.
 
 ### Snort 3
 
@@ -57,7 +57,7 @@ docker run --rm --entrypoint /home/snorty/snort3/bin/snort \
   -R /rules/local.rules -r /pcap/capture.pcap -k none -A alert_fast -q
 ```
 
-`-k none` is the Snort version of Zeek's `-C`. The rules are in [rules/local.rules](rules/local.rules).
+`-k none` is the Snort version of Zeek's `-C`. Without it, Snort counted 593 TCP and 1,698 UDP packets as having bad checksums and discarded 2,330 packets. The rules are in [rules/local.rules](rules/local.rules).
 
 ## What it left behind
 
@@ -146,7 +146,7 @@ Not covered here: NetBIOS name service, the other fallback the same attack uses.
 ## What broke
 
 - **I lost my first Zeek output.** On the first run, the logs ended up outside the evidence folder and weren't kept. This time every run writes inside the lab folder.
-- **Checksum offloading hides traffic, and nothing tells you.** I ran Snort again with `-k none` removed and everything else the same. The result went from 6 alerts to 0, with no error and no warning. A sensor on a host with offloading reports clean when it isn't. Zeek has the same problem without `-C`.
+- **Checksum offloading hides traffic, and Snort doesn't tell you.** I ran Snort again with `-k none` removed and everything else the same. The result went from 6 alerts to 0, with no warning unless you read its end-of-run counters. A sensor on a host with offloading can report clean when it isn't. Zeek without `-C` at least prints a warning, but it still drops records. Tools also disagree on these packets: tshark recognizes the partial checksum and calls it correct, while Snort and Zeek call it bad. [Lab 02](../02-tshark-packet-triage/) works through all three.
 - **The Snort image ignored my commands.** `snort -V` printed nothing. `docker inspect` showed a shell-form entrypoint (`/bin/sh -c /bin/bash`) that throws away arguments. Setting `--entrypoint` to the Snort binary fixed it.
 - **My first "before" capture showed 0 packets.** The Windows laptop's Wi-Fi had a `169.254.x.x` address, so it wasn't on the home network at all and its LLMNR went out on another network. I only caught this because I required a positive result before testing the fix. That's also why the "after" test has a control.
 
