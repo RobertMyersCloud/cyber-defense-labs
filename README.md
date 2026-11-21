@@ -21,9 +21,6 @@ Network monitoring, host defense, and crypto, worked on real captures and real m
 
 Linux, networking, and password basics, done hands-on.
 
-| Lab | What it shows |
-|---|---|
-
 ## Lab environment
 
 Isolated range behind a TP-Link ER605 with default-deny to the household network. Targets run as VMs on Proxmox. Logs go to a Splunk instance on the range. Attacks come from a dedicated Kali laptop. Detection work for these labs also lives in [soc-lab](https://github.com/RobertMyersCloud/soc-lab).
