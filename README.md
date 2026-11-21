@@ -18,6 +18,7 @@ Network monitoring, host defense, and crypto, worked on real captures and real m
 | Lab | What it shows |
 |---|---|
 | [01 Zeek and Snort 3 on my own traffic](essentials/01-zeek-snort-own-traffic/) | Broke down a DNS volume spike, wrote and tested my own Snort rules, and found and closed an LLMNR exposure on a Windows host |
+| [02 Packet triage with tshark](essentials/02-tshark-packet-triage/) | Found traffic the logs never show, identified devices from MAC vendors without sending a packet, and worked out why three tools disagreed about the same checksums |
 
 ## Foundations
 
