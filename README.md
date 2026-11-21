@@ -8,9 +8,6 @@ Every lab follows the same shape: run it, see what it leaves behind, detect it, 
 
 Attack techniques run against my own targets, then traced back through the evidence they leave.
 
-| Lab | What it shows |
-|---|---|
-
 ## Security Essentials
 
 Network monitoring, host defense, and crypto, worked on real captures and real machines.
